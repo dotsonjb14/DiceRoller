@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <div id="form">
+            <fieldset>
+                <legend>Roll Settings</legend>
+                <input style="width: 75px;" type="number" name="times" id="times">
+                <select name="rollType" id="rollType">
+                    <option value="6">d6</option>
+                    <option selected value="20">d20</option>
+                </select>
+            </fieldset>
+            <fieldset>
+                <legend>Options</legend>
+                <label for="drop">Drop</label><br/>
+                <input type="number" name="drop" id="drop"><br/>
+                <label for="rerolls">Reroll 1s?</label>
+                <input type="checkbox" name="rerolls" id="rerolls">
+            </fieldset>
+        </div>
+        <div>
+            <button id="rollBtn" type="button">Roll</button>
+            <button id="clearBtn" type="button">Clear</button>
+            <button type="reset">Reset</button>
+        </div>
+    </form>
+    <div>Output:</div>
+    <pre id="rolls"></pre>
+    <script src="engine.js"></script>
+    <script>
+        let engine = new Engine();
+        engine.init();
+    </script>
+</body>
+</html>

@@ -7,8 +7,17 @@
     <title>Document</title>
 
     <style>
-        .u {
-            text-decoration: line-through;
+        input[type=number] {
+            width: 75px;
+        }
+
+        span.imp {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        span.mod {
+            border: solid 1px;
         }
     </style>
 </head>
@@ -17,7 +26,7 @@
         <div id="form">
             <fieldset>
                 <legend>Roll Settings</legend>
-                <input style="width: 75px;" type="number" name="times" id="times">
+                <input type="number" name="times" id="times">
                 <select name="rollType" id="rollType">
                     <option value="6">d6</option>
                     <option selected value="20">d20</option>
@@ -30,6 +39,10 @@
                 <label for="rerolls">Reroll 1s?</label>
                 <input type="checkbox" name="rerolls" id="rerolls">
             </fieldset>
+            <fieldset>
+                <legend>Modifier</legend>
+                <input type="number" name="mod" id="mod">
+            </fieldset>
         </div>
         <div>
             <button id="rollBtn" type="button">Roll</button>
@@ -39,10 +52,19 @@
     </form>
     <div>Output:</div>
     <pre id="rolls"></pre>
-    <script src="engine.js?v=12312"></script>
     <script>
-        let engine = new Engine();
-        engine.init();
+        (function () {
+            let userAgent = window.navigator.userAgent;
+            if(userAgent.indexOf('MSIE') > 0 || userAgent.indexOf('Trident/') > 0) {
+                alert('this website will not work in IE');
+                return;
+            }
+
+            let cacheBust = Math.random().toString();
+            let script = document.createElement('script');
+            script.setAttribute('src', `engine.js?cb=${cacheBust}`);
+            document.body.appendChild(script);
+        })()
     </script>
 </body>
 </html>

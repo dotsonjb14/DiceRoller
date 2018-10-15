@@ -1,3 +1,5 @@
+const NL = '<br />'
+
 class Engine {
     get rollBtn() {
         return document.querySelector('#rollBtn');
@@ -28,15 +30,19 @@ class Engine {
     }
 
     get output() {
-        return this.rollsContainer.textContent;
+        return this.rollsContainer.innerHTML;
     }
 
     set output(value) {
-        this.rollsContainer.textContent = value;
+        this.rollsContainer.innerHTML = value;
+    }
+
+    get modifier() {
+        return this._getNum(document.querySelector('#mod').value);
     }
 
     constructor() {
-        // bind to this
+        // bind to "this"
         this.rollBtnClick = this.rollBtnClick.bind(this);
         this.clearBtnClick = this.clearBtnClick.bind(this);
     }
@@ -57,14 +63,14 @@ class Engine {
         }
         
 
-        this.output += rolls.map(x => x.toString()).join(', ') + '\n';
+        this.output += rolls.join(', ') + NL;
 
         if(this.rerollOnes) {
             rolls = this.doRerollOnes(rolls);
         }
 
         if(this.drop !== null) {
-            this.output += `Dropping lowest ${this.drop} rolls\n`;
+            this.output += `Dropping lowest ${this.drop} rolls` + NL;
 
             let droppable = rolls.map(x => x);
             droppable.sort();
@@ -75,7 +81,9 @@ class Engine {
                 toDrop.push(droppable[i]);
             }
 
-            this.output += 'Dropping ' + toDrop.map(x => x.toString()).join(', ') + '\n'
+            console.log(toDrop);
+
+            this.output += 'Dropping ' + toDrop.map(x => x.toString()).join(', ') + NL
 
             for(let r of toDrop) {
                 let index = rolls.indexOf(r);
@@ -84,12 +92,32 @@ class Engine {
 
             rolls = rolls.filter(x => x !== null);
 
-            this.output += 'Left is ' + rolls.map(x => x.toString()).join(', ') + '\n';
+            this.output += 'Left is ' + rolls.map(x => x.toString()).join(', ') + NL;
         }
 
         let sum = rolls.reduce((state, val) => state + val, 0);
 
-        this.output += `Total: ${sum}\n`
+        let eq = rolls.join(' + ');
+
+        if(this.modifier) {
+            this.output += `Applying modifier of ${this.modifier} to total\n`;
+            sum += this.modifier;
+
+            if(this.modifier > 0) {
+                eq += ' + ';
+            }
+            else {
+                eq += ' - ';
+            }
+
+            let v = Math.abs(this.modifier);
+
+            eq += `<span class="mod">${v}</span>`
+        }
+
+        
+
+        this.output += `Total: ${eq} = <span class="imp">${sum}</span>` + NL + NL;
 
     }
 
@@ -99,7 +127,7 @@ class Engine {
             return rolls;
         }
 
-        this.output += `rerolling ${numRerolls} times due to 1(s)\n`
+        this.output += `rerolling ${numRerolls} times due to 1(s)` + NL;
 
         let newRolls = rolls.filter(x => x !== 1);
 
@@ -109,7 +137,7 @@ class Engine {
 
         this.output += 'Rolled: ';
 
-        this.output += newRolls.map(x => x.toString()).join(', ') + '\n';
+        this.output += newRolls.map(x => x.toString()).join(', ') + NL;
 
         return this.doRerollOnes(newRolls);
     }
@@ -132,3 +160,6 @@ class Engine {
         return Math.floor(Math.random() * (this.rollType - 1 + 1)) + 1;
     }
 }
+
+let engine = new Engine();
+engine.init();
